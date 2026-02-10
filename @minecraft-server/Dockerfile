@@ -1,16 +1,12 @@
-FROM python:3.14-slim AS builder
-
-ENV PYTHONUNBUFFERED=1
-
-COPY ./deploy_jres.py /data/deploy_jres.py
-COPY ./jre-pkgs.toml /data/jre-pkgs.toml
-
-WORKDIR /data
-
-RUN --mount=type=cache,target=/tmp/jre-pkg \
-    python ./deploy_jres.py
+FROM eclipse-temurin:25-jre AS jre-25
+FROM eclipse-temurin:21-jre AS jre-21
+FROM eclipse-temurin:17-jre AS jre-17
+FROM eclipse-temurin:8-jre AS jre-8
 
 FROM debian:bookworm-slim
+
+ARG DEFAULT_PUID=1000
+ARG DEFAULT_PGID=1000
 
 ENV TZ=Asia/Shanghai
 ENV JAVA_VERSION=25
@@ -18,13 +14,25 @@ ENV JAVA_VERSION=25
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update &&\
-    apt-get install -y tzdata
+    apt-get install -y gosu
 
-COPY --from=builder /data/runtime /opt/runtime
+COPY --from=jre-8 /opt/java/openjdk /opt/runtime/jre-8
+COPY --from=jre-17 /opt/java/openjdk /opt/runtime/jre-17
+COPY --from=jre-21 /opt/java/openjdk /opt/runtime/jre-21
+COPY --from=jre-25 /opt/java/openjdk /opt/runtime/jre-25
+
+RUN groupadd -g ${DEFAULT_PGID} gsrv
+RUN useradd -u ${DEFAULT_PUID} -g ${DEFAULT_PGID} \
+    -d /opt/gsrv \
+    -m \
+    -s /bin/bash \
+    gsrv
+
+RUN mkdir -p /app && chown gsrv:gsrv /app
+
+WORKDIR /app
 
 COPY ./entrypoint /bin/entrypoint
 RUN chmod +x /bin/entrypoint
-
-VOLUME ["/app"]
 
 ENTRYPOINT ["entrypoint"]
