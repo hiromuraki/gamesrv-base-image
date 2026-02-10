@@ -9,13 +9,13 @@ on:
     workflow_dispatch:
 
 env:
+    PACKAGE_SHORT_NAME: minecraft-server
     REGISTRY: ${{ vars.DOCKER_REGISTRY || 'ghcr.io'}}
     REGISTRY_TOKEN: ${{ secrets.PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
     BUILDKITD_CONFIG_FILE: .github/${{ vars.BUILDKITD_CONFIG_FILE || 'buildkitd.toml' }}
     # 注意：如果 github.repository_owner 包含大写字母，这里会直接导致后续 Docker 报错。
     # 只要全小写用户（组织）名，这就没问题。
     FULL_IMAGE_NAME: ${{ vars.DOCKER_REGISTRY || 'ghcr.io'}}/${{ github.repository_owner }}/minecraft-server
-    PACKAGE_SHORT_NAME: minecraft-server
 
 jobs:
     # Job 1: 构建 amd64
@@ -48,8 +48,8 @@ jobs:
                   push: true
                   tags: ${{ env.FULL_IMAGE_NAME }}:latest-amd64
                   provenance: false
-                  cache-from: type=gha
-                  cache-to: type=gha,mode=max
+                  cache-from: type=registry,ref=${{ env.FULL_IMAGE_NAME }}:buildcache-amd64
+                  cache-to: type=registry,ref=${{ env.FULL_IMAGE_NAME }}:buildcache-amd64,mode=max
 
     # Job 2: 构建 arm64
     build-arm64:
@@ -84,8 +84,8 @@ jobs:
                   push: true
                   tags: ${{ env.FULL_IMAGE_NAME }}:latest-arm64
                   provenance: false
-                  cache-from: type=gha
-                  cache-to: type=gha,mode=max
+                  cache-from: type=registry,ref=${{ env.FULL_IMAGE_NAME }}:buildcache-arm64
+                  cache-to: type=registry,ref=${{ env.FULL_IMAGE_NAME }}:buildcache-arm64,mode=max
 
     # Job 3: 合并与清理
     merge-manifest:
