@@ -14,7 +14,9 @@ ENV JAVA_VERSION=25
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update &&\
-    apt-get install -y gosu
+    apt-get install -y \
+    gosu \
+    ca-certificates
 
 COPY --from=jre-8 /opt/java/openjdk /opt/runtime/jre-8
 COPY --from=jre-17 /opt/java/openjdk /opt/runtime/jre-17
