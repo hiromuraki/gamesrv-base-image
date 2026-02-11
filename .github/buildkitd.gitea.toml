@@ -1,6 +1,6 @@
 [registry."docker.io"]
 mirrors = ["https://docker.1ms.run"]
 
-[registry."172.18.12.99:3000"]
+[registry."git.server.home"]
 http = true
 insecure = true
