@@ -18,13 +18,13 @@ env:
     FULL_IMAGE_NAME: ${{ vars.DOCKER_REGISTRY || 'ghcr.io'}}/${{ github.repository_owner }}/minecraft-server
 
 jobs:
-    # Job 0: 环境检查，该 Action 只用于 GitHub
+    # Job 0: 环境检查，该 Action 只用于非 Github （如 Gitea）
     check-env:
-        if: github.server_url == 'https://github.com'
+        if: github.server_url != 'https://github.com'
         runs-on: ubuntu-latest
         steps:
             - name: Check Environment
-              run: echo Continuing action on GitHub
+              run:
 
     # Job 1: 构建 amd64
     build-amd64:
