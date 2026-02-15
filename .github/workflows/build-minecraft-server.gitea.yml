@@ -14,7 +14,11 @@ env:
 jobs:
     # Job 0: 环境检查
     gatekeeper:
-        uses: ./.github/workflows/guard-gitea.yml
+        if: github.server_url != 'https://github.com'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Environment Check
+              run: true
 
     # Job 1: 构建 amd64
     build-amd64:
