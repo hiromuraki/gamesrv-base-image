@@ -100,7 +100,6 @@ jobs:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
               with:
-                  driver-opts: image=local/custom-buildkit:latest
                   buildkitd-config: ${{ env.BUILDKITD_CONFIG_FILE }}
 
             - name: Login to Docker Registry
