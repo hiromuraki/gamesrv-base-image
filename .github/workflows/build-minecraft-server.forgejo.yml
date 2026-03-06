@@ -18,7 +18,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Environment Check
-              run: true
+              run: ""
 
     # Job 1: 构建 amd64
     build-amd64:
@@ -34,8 +34,6 @@ jobs:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
               with:
-                  driver-opts: |
-                      network=forgejo_net
                   buildkitd-config: .github/buildkitd.forgejo.toml
 
             - name: Login to Docker Registry
@@ -73,8 +71,6 @@ jobs:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
               with:
-                  driver-opts: |
-                      network=forgejo_net
                   buildkitd-config: .github/buildkitd.forgejo.toml
 
             - name: Login to Docker Registry
@@ -108,8 +104,6 @@ jobs:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
               with:
-                  driver-opts: |
-                      network=forgejo_net
                   buildkitd-config: .github/buildkitd.forgejo.toml
 
             - name: Login to Docker Registry
