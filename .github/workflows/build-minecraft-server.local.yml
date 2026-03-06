@@ -5,7 +5,8 @@ on:
         branches: ["main", "master"]
         paths:
             - "@minecraft-server/**"
-            - ".github/workflows/build-minecraft-server.forgejo.yml"
+            - ".github/workflows/build-minecraft-server.local.yml"
+            - ".github/workflows/build-minecraft-server.yml"
     workflow_dispatch:
 
 env:
@@ -18,7 +19,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Environment Check
-              run: ""
+              run: true
 
     # Job 1: 构建 amd64
     build-amd64:
